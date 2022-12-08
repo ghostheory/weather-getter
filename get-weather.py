@@ -14,7 +14,7 @@ class bcolors:
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
-    ENDC = '\033[0m'
+    RESET = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
@@ -41,9 +41,13 @@ def convert_coordinates(coords: dict) -> dict:
 def retrieve_current_weather(grid_values: dict) -> dict:
     """Feed weather.gov newly generated gridpoints, return current local weather"""
     response = requests.get(f"https://api.weather.gov/gridpoints/{grid_values['gridId']}/{grid_values['gridX']},{grid_values['gridY']}/forecast")
-    current_local_weather = json.loads(response.content)['properties']['periods'][0]['detailedForecast']
+    current_local_weather = json.loads(response.content)['properties']['periods'][0:2]
     #print(json.dumps(current_local_weather, indent=4))
-    print(f"{current_local_weather}")
+    print(f"{bcolors.OKCYAN}{current_local_weather[0]['name']}{bcolors.RESET}:")
+    print(f"\t{bcolors.OKBLUE}{current_local_weather[0]['detailedForecast']}{bcolors.RESET}")
+    print(f"{bcolors.OKCYAN}{current_local_weather[1]['name']}{bcolors.RESET}:")
+    print(f"\t{bcolors.OKBLUE}{current_local_weather[1]['detailedForecast']}{bcolors.RESET}")
+    #['detailedForecast']
     return
 
 coordtest = get_coordinates(an_address)
